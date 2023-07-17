@@ -27,7 +27,8 @@ export default class TableSelection {
   }
 
   helpLinesInitial () {
-    let parent = this.quill.root.parentNode
+    //Deve referenciar o elemento "containerEditorPrincipal"
+    let parent = this.quill.root.parentNode.parentNode;
     LINE_POSITIONS.forEach(direction => {
       this[direction] = document.createElement('div')
       this[direction].classList.add('qlbt-selection-line')
@@ -42,7 +43,9 @@ export default class TableSelection {
   }
 
   mouseDownHandler (e) {
-    if (e.button !== 0 || !e.target.closest(".quill-better-table")) return
+    if ((e.button !== 0 && e.button !== 2) || !e.target.closest(".quill-better-table")) return;
+    const tds = this.computeSelectedTds();
+    if (e.button === 2 && tds.length > 1) return;
     this.quill.root.addEventListener('mousemove', mouseMoveHandler, false)
     this.quill.root.addEventListener('mouseup', mouseUpHandler, false)
 
@@ -50,12 +53,12 @@ export default class TableSelection {
     const startTd = e.target.closest('td[data-row]')
     const startTdRect = getRelativeRect(
       startTd.getBoundingClientRect(),
-      this.quill.root.parentNode
-    )
+      this.quill.root.parentNode.parentNode
+    );
     this.dragging = true
     this.boundary = computeBoundaryFromRects(startTdRect, startTdRect)
     this.correctBoundary()
-    this.selectedTds = this.computeSelectedTds()
+    this.selectedTds = tds;
     this.repositionHelpLines()
 
     function mouseMoveHandler (e) {
@@ -63,8 +66,8 @@ export default class TableSelection {
       const endTd = e.target.closest('td[data-row]')
       const endTdRect = getRelativeRect(
         endTd.getBoundingClientRect(),
-        self.quill.root.parentNode
-      )
+        self.quill.root.parentNode.parentNode
+      );
       self.boundary = computeBoundaryFromRects(startTdRect, endTdRect)
       self.correctBoundary()
       self.selectedTds = self.computeSelectedTds()
@@ -90,8 +93,8 @@ export default class TableSelection {
     tableCells.forEach(tableCell => {
       let { x, y, width, height } = getRelativeRect(
         tableCell.domNode.getBoundingClientRect(),
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       let isCellIntersected = (
           (x + ERROR_LIMIT >= this.boundary.x && x + ERROR_LIMIT <= this.boundary.x1) ||
           (x - ERROR_LIMIT + width >= this.boundary.x && x - ERROR_LIMIT + width <= this.boundary.x1)
@@ -112,8 +115,8 @@ export default class TableSelection {
     return tableCells.reduce((selectedCells, tableCell) => {
       let { x, y, width, height } = getRelativeRect(
         tableCell.domNode.getBoundingClientRect(),
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       let isCellIncluded = (
           x + ERROR_LIMIT >= this.boundary.x &&
           x - ERROR_LIMIT + width <= this.boundary.x1
@@ -170,12 +173,12 @@ export default class TableSelection {
   refreshHelpLinesPosition () {
     const startRect = getRelativeRect(
       this.selectedTds[0].domNode.getBoundingClientRect(),
-      this.quill.root.parentNode
-    )
+      this.quill.root.parentNode.parentNode
+    );
     const endRect = getRelativeRect(
       this.selectedTds[this.selectedTds.length - 1].domNode.getBoundingClientRect(),
-      this.quill.root.parentNode
-    )
+      this.quill.root.parentNode.parentNode
+    );
     this.boundary = computeBoundaryFromRects(startRect, endRect)
     this.repositionHelpLines()
   }
@@ -197,9 +200,9 @@ export default class TableSelection {
 
   setSelection (startRect, endRect) {
     this.boundary = computeBoundaryFromRects(
-      getRelativeRect(startRect, this.quill.root.parentNode),
-      getRelativeRect(endRect, this.quill.root.parentNode)
-    )
+      getRelativeRect(startRect, this.quill.root.parentNode.parentNode),
+      getRelativeRect(endRect, this.quill.root.parentNode.parentNode)
+    );
     this.correctBoundary()
     this.selectedTds = this.computeSelectedTds()
     this.repositionHelpLines()
@@ -216,7 +219,7 @@ export default class TableSelection {
   }
 }
 
-function computeBoundaryFromRects (startRect, endRect) {
+export function computeBoundaryFromRects (startRect, endRect) {
   let x = Math.min(
     startRect.x,
     endRect.x,

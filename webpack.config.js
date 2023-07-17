@@ -4,38 +4,35 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production'
-  let entry, minimize
+  const isProduction = argv.mode === 'production';
+  let entry;
 
   if (env && env.minimize) {
     entry = {
       'quill-better-table.min.js': ['./src/quill-better-table.js']
-    }
-    minimize = true
+    }    
   } else {
     entry = {
       'quill-better-table.js': ['./src/quill-better-table.js'],
       'quill-better-table': './src/assets/quill-better-table.scss',
       'demo/demo1.js': './demo/js/demo1.js'
-    }
-    minimize = false
+    }    
   }
 
   return {
-    entry,
-
+    mode: argv.mode,
+    entry,        
     optimization: {
-      minimize
+      minimize: isProduction
     },
-
     output:{
       filename: '[name]',
       library: 'quillBetterTable',
       libraryExport: 'default',
       libraryTarget: 'umd',
-      path: path.resolve(__dirname, './dist/')
+      path: path.resolve(__dirname, './dist/'),
+      clean: true,
     },
-
     resolve: {
       alias: {
         'src': path.resolve(__dirname, './src'),
@@ -43,7 +40,6 @@ module.exports = (env, argv) => {
       },
       extensions: ['.js', '.scss', '.html']
     },
-
     externals: {
       'quill': {
         commonjs: 'quill',
@@ -52,7 +48,6 @@ module.exports = (env, argv) => {
         root: 'Quill'
       }
     },
-
     module: {
       rules: [
         {
@@ -67,7 +62,6 @@ module.exports = (env, argv) => {
             }
           }]
         },
-
         {
           test: /\.(html|svg)$/,
           use: [{
@@ -77,7 +71,6 @@ module.exports = (env, argv) => {
             }
           }]
         },
-
         {
           test: /\.scss$/,
           use: [
@@ -87,7 +80,6 @@ module.exports = (env, argv) => {
             'sass-loader'
           ]
         },
-
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
@@ -116,25 +108,22 @@ module.exports = (env, argv) => {
         }
       ]
     },
-
     plugins:[
       new HtmlWebpackPlugin({
         title:'quill-better-table',
         template:'./demo/demo1.html',
         filename:'demo/demo1.html',
       }),
-
       new MiniCssExtractPlugin({
         filename: '[name].css',
         chunkFilename: '[name].[id].css'
       }),
-
       new webpack.HotModuleReplacementPlugin({})
     ],
-
     devServer:{
-      host:'localhost',
-      contentBase: path.join(__dirname, './dist'),
+      static: {
+        directory: path.join(__dirname, './dist'),
+      },      
       port: 8080,
       hot: false
     }

@@ -4,11 +4,10 @@
   "description": "Module for better table in Quill, more useful features are supported.",
   "main": "dist/quill-better-table.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode=development",
-    "build": "npm run build:webpack && npm run build:webpack:minimize && npm run build:cleanup",
-    "build:webpack:minimize": "webpack --config webpack.config.js --mode=production --env minimize",
-    "build:webpack": "webpack --config webpack.config.js --mode=production",
-    "build:cleanup": "del dist\\quill-better-table",    
+    "dev": "npm run build:develop && webpack serve",
+    "build:release": "webpack --config webpack.config.js --mode=production && npm run build:cleanup",
+    "build:develop": "webpack --config webpack.config.js --mode=development",    
+    "build:cleanup": "rd dist\\demo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

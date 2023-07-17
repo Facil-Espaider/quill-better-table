@@ -30,8 +30,8 @@ const MENU_ITEMS_DEFAULT = {
         (cellRect, boundary) => {
           return Math.abs(cellRect.x + cellRect.width - boundary.x1) <= ERROR_LIMIT
         },
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
 
       const newColumn = tableContainer.insertColumn(
         this.boundary,
@@ -39,7 +39,8 @@ const MENU_ITEMS_DEFAULT = {
         true,
         this.quill.root.parentNode)
 
-      this.tableColumnTool.updateToolCells()
+      this.tableColumnTool.updateToolCells();
+      this.tableColumnTool.updateColToolPosition();
       this.quill.update(Quill.sources.USER)
       this.quill.setSelection(
         this.quill.getIndex(newColumn[0]),
@@ -64,16 +65,17 @@ const MENU_ITEMS_DEFAULT = {
         (cellRect, boundary) => {
           return Math.abs(cellRect.x - boundary.x) <= ERROR_LIMIT
         },
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
 
       const newColumn = tableContainer.insertColumn(
         this.boundary,
         colIndex,
         false,
-        this.quill.root.parentNode)
+        this.quill.root.parentNode.parentNode)
 
-      this.tableColumnTool.updateToolCells()
+      this.tableColumnTool.updateToolCells();
+      this.tableColumnTool.updateColToolPosition();
       this.quill.update(Quill.sources.USER)
       this.quill.setSelection(
         this.quill.getIndex(newColumn[0]),
@@ -95,8 +97,8 @@ const MENU_ITEMS_DEFAULT = {
       const affectedCells = tableContainer.insertRow(
         this.boundary,
         false,
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       this.quill.update(Quill.sources.USER)
       this.quill.setSelection(
         this.quill.getIndex(affectedCells[0]),
@@ -118,8 +120,8 @@ const MENU_ITEMS_DEFAULT = {
       const affectedCells = tableContainer.insertRow(
         this.boundary,
         true,
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       this.quill.update(Quill.sources.USER)
       this.quill.setSelection(
         this.quill.getIndex(affectedCells[0]),
@@ -142,8 +144,8 @@ const MENU_ITEMS_DEFAULT = {
       const rowspan = tableContainer.rows().reduce((sum, row) => {
         let rowRect  = getRelativeRect(
           row.domNode.getBoundingClientRect(),
-          this.quill.root.parentNode
-        )
+          this.quill.root.parentNode.parentNode
+        );
         if (
           rowRect.y > this.boundary.y - ERROR_LIMIT &&
           rowRect.y + rowRect.height < this.boundary.y + this.boundary.height + ERROR_LIMIT
@@ -157,8 +159,8 @@ const MENU_ITEMS_DEFAULT = {
       const colspan = this.columnToolCells.reduce((sum, cell) => {
         let cellRect = getRelativeRect(
           cell.getBoundingClientRect(),
-          this.quill.root.parentNode
-        )
+          this.quill.root.parentNode.parentNode
+        );
         if (
           cellRect.x > this.boundary.x - ERROR_LIMIT &&
           cellRect.x + cellRect.width < this.boundary.x + this.boundary.width + ERROR_LIMIT
@@ -173,8 +175,8 @@ const MENU_ITEMS_DEFAULT = {
         this.selectedTds,
         rowspan,
         colspan,
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       this.quill.update(Quill.sources.USER)
       this.tableSelection.setSelection(
         mergedCell.domNode.getBoundingClientRect(),
@@ -190,8 +192,8 @@ const MENU_ITEMS_DEFAULT = {
       const tableContainer = Quill.find(this.table)
       tableContainer.unmergeCells(
         this.selectedTds,
-        this.quill.root.parentNode
-      )
+        this.quill.root.parentNode.parentNode
+      );
       this.quill.update(Quill.sources.USER)
       this.tableSelection.clearSelection()
     }
@@ -209,13 +211,13 @@ const MENU_ITEMS_DEFAULT = {
           return cellRect.x + ERROR_LIMIT > boundary.x &&
             cellRect.x + cellRect.width - ERROR_LIMIT < boundary.x1
         },
-        this.quill.root.parentNode
+        this.quill.root.parentNode.parentNode
       )
 
       let isDeleteTable = tableContainer.deleteColumns(
         this.boundary,
         colIndexes,
-        this.quill.root.parentNode
+        this.quill.root.parentNode.parentNode
       )
       if (!isDeleteTable) {
         this.tableColumnTool.updateToolCells()
@@ -232,7 +234,7 @@ const MENU_ITEMS_DEFAULT = {
       const tableContainer = Quill.find(this.table)
       tableContainer.deleteRow(
         this.boundary,
-        this.quill.root.parentNode
+        this.quill.root.parentNode.parentNode
       )
       this.quill.update(Quill.sources.USER)
       this.tableSelection.clearSelection()

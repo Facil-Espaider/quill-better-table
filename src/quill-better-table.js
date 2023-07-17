@@ -10,7 +10,8 @@ import {
   matchTable
 } from './utils/node-matchers'
 
-import { getEventComposedPath } from './utils/index'
+import { getEventComposedPath, getRelativeRect } from './utils/index'
+import {computeBoundaryFromRects} from './modules/table-selection'
 
 const Module = Quill.import('core/module')
 const Delta = Quill.import('delta')
@@ -45,9 +46,8 @@ class BetterTable extends Module {
 
   constructor(quill, options) {
     super(quill, options);
-
-    // handle click on quill-better-table
-    this.quill.root.addEventListener('click', (evt) => {
+  
+    const clickEvent = evt => {
       // bugfix: evt.path is undefined in Safari, FF, Micro Edge
       const path = getEventComposedPath(evt)
 
@@ -61,15 +61,28 @@ class BetterTable extends Module {
 
       if (tableNode) {
         // current table clicked
-        if (this.table === tableNode) return
+        if (this.table === tableNode) return;
         // other table clicked
-        if (this.table) this.hideTableTools()
-        this.showTableTools(tableNode, quill, options)
+        if (this.table) this.hideTableTools();
+        this.showTableTools(tableNode, quill, options);
+        let startTd = evt.target.closest('td[data-row]');
+        if (!startTd) {
+          window.getSelection().removeAllRanges();
+        } else {
+          //Deve referenciar o elemento "containerEditorPrincipal"
+          const startTdRect = getRelativeRect(startTd.getBoundingClientRect(), this.quill.root.parentNode.parentNode);
+          this.tableSelection.boundary = computeBoundaryFromRects(startTdRect, startTdRect);
+          this.tableSelection.repositionHelpLines();
+        }
       } else if (this.table) {
         // other clicked
         this.hideTableTools()
       }
-    }, false)
+    };
+
+    // handle right click on quill-better-table
+    this.quill.root.addEventListener('click', clickEvent, false);
+    this.quill.root.addEventListener('contextmenu', clickEvent, false);
 
     // handle right click on quill-better-table
     this.quill.root.addEventListener('contextmenu', (evt) => {
@@ -194,7 +207,18 @@ class BetterTable extends Module {
     delta = new Array(rows).fill(0).reduce(memo => {
       let tableRowId = rowId()
       return new Array(columns).fill('\n').reduce((memo, text) => {
-        memo.insert(text, { 'table-cell-line': {row: tableRowId, cell: cellId()} });
+        memo.insert(text, { 'table-cell-line': {
+          row: tableRowId, 
+          cell: cellId(),          
+          cell_btc: '#000000',
+          cell_bbc: '#000000',
+          cell_brc: '#000000',
+          cell_blc: '#000000',
+          cell_bts: '1',
+          cell_bbs: '1',
+          cell_brs: '1',
+          cell_bls: '1',
+        } });
         return memo
       }, memo)
     }, delta)

@@ -19,21 +19,36 @@ export default class TableColumnTool {
   }
 
   initColTool () {
-    const parent = this.quill.root.parentNode
+    //Deve referenciar o elemento "containerEditorPrincipal"
+    const parent = this.quill.root.parentNode.parentNode;
     const tableRect = this.table.getBoundingClientRect()
-    const containerRect = parent.getBoundingClientRect()
-    const tableViewRect = this.table.parentNode.getBoundingClientRect()
+    const containerRect = parent.getBoundingClientRect()    
 
     this.domNode = document.createElement('div')
     this.domNode.classList.add('qlbt-col-tool')
     this.updateToolCells()
     parent.appendChild(this.domNode)
     css(this.domNode, {
-      width: `${tableViewRect.width}px`,
+      width: `${tableRect.width}px`,
       height: `${COL_TOOL_HEIGHT}px`,
-      left: `${tableViewRect.left - containerRect.left + parent.scrollLeft}px`,
-      top: `${tableViewRect.top - containerRect.top + parent.scrollTop - COL_TOOL_HEIGHT - 5}px`
+      left: `${tableRect.left - containerRect.left + parent.scrollLeft}px`,
+      top: `${tableRect.top - containerRect.top + parent.scrollTop - COL_TOOL_HEIGHT - 5}px`
     })
+  }
+
+  updateColToolPosition() {
+    setTimeout(() => {
+        const parent = this.quill.root.parentNode.parentNode;
+        const tableRect = this.table.getBoundingClientRect();
+        const containerRect = parent.getBoundingClientRect();
+        
+        css(this.domNode, {
+          width: `${tableRect.width}px`,
+          height: `${COL_TOOL_HEIGHT}px`,
+          left: `${tableRect.left - containerRect.left + parent.scrollLeft}px`,
+          top: `${tableRect.top - containerRect.top + parent.scrollTop - COL_TOOL_HEIGHT - 5}px`
+        })
+    }, 0);
   }
 
   createToolCell () {

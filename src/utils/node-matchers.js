@@ -15,7 +15,7 @@ export function matchTableCell (node, delta, scroll) {
   const cellId = cells.indexOf(node) + 1;
   const colspan = node.getAttribute('colspan') || false
   const rowspan = node.getAttribute('rowspan') || false
-  const cellBg = node.getAttribute('data-cell-bg') || node.style.backgroundColor // The td from external table has no 'data-cell-bg' 
+  const cellBg = node.getAttribute('data-cell_bg') || node.style.backgroundColor // The td from external table has no 'data-cell_bg' 
 
   // bugfix: empty table cells copied from other place will be removed unexpectedly
   if (delta.length() === 0) {
@@ -163,7 +163,7 @@ export function matchTableHeader (node, delta, scroll) {
 }
 
 // supplement colgroup and col
-export function matchTable (node, delta, scroll) {
+export function matchTable (node, delta, scroll, isInsideTable) {
   let newColDelta = new Delta()
   const topRow = node.querySelector('tr')
 
@@ -182,7 +182,9 @@ export function matchTable (node, delta, scroll) {
   // issue #2
   // bugfix: the table copied from Excel had some default col tags missing
   //         add missing col tags
-  if (colsNumber === maxCellsNumber) {
+
+  //In the case of already being inside of a table, do not add another column to the table.
+  if (colsNumber === maxCellsNumber || isInsideTable) {
     return delta
   } else {
     for (let i = 0; i < maxCellsNumber - colsNumber; i++) {

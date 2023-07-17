@@ -6,10 +6,13 @@ const Break = Quill.import("blots/break")
 const Block = Quill.import("blots/block")
 const Container = Quill.import("blots/container")
 
-const COL_ATTRIBUTES = ["width"]
+const COL_ATTRIBUTES = ["width", 'table_left_indent', 'table_alignment', 'table_preffered_width'];
 const COL_DEFAULT = {
-  width: 100
-}
+  width: 100,
+  table_left_indent: 0,
+  table_alignment: 0,
+  table_preffered_width: 0
+};
 const CELL_IDENTITY_KEYS = ["row", "cell"]
 const CELL_ATTRIBUTES = ["rowspan", "colspan"]
 const CELL_DEFAULT = {
@@ -17,6 +20,13 @@ const CELL_DEFAULT = {
   colspan: 1
 }
 const ERROR_LIMIT = 5
+
+const TABLE_ALIGNMENT = {
+  LEFT: '0',
+  CENTER: '1',
+  RIGHT: '2'
+};
+Object.freeze(TABLE_ALIGNMENT);
 
 class TableCellLine extends Block {
   static create(value) {
@@ -33,20 +43,77 @@ class TableCellLine extends Block {
     })
 
     if (value['cell-bg']) {
-      node.setAttribute('data-cell-bg', value['cell-bg'])
+      node.setAttribute('data-cell_bg', value['cell-bg'])
+    }
+    
+    if (value['cell_vertical_alignment']) {
+      node.setAttribute('data-cell_vertical_alignment', value['cell_vertical_alignment']);
     }
 
+    if (value['cell_horizontal_alignment']) {
+      node.setAttribute('data-cell_horizontal_alignment', value['cell_horizontal_alignment']);
+    }
+
+    if (value['cell_btc']) {
+      node.setAttribute('data-cell_btc', value['cell_btc']);
+    }
+
+    if (value['cell_bbc']) {
+      node.setAttribute('data-cell_bbc', value['cell_bbc']);
+    }
+
+    if (value['cell_brc']) {
+      node.setAttribute('data-cell_brc', value['cell_brc']);
+    }
+
+    if (value['cell_blc']) {
+      node.setAttribute('data-cell_blc', value['cell_blc']);
+    }
+
+    if (value['cell_bts']) {
+      node.setAttribute('data-cell_bts', value['cell_bts']);
+    }
+
+    if (value['cell_bbs']) {
+      node.setAttribute('data-cell_bbs', value['cell_bbs']);
+    }
+
+    if (value['cell_brs']) {
+      node.setAttribute('data-cell_brs', value['cell_brs']);
+    }
+
+    if (value['cell_bls']) {
+      node.setAttribute('data-cell_bls', value['cell_bls']);
+    }
+
+    if (value['row_height']) {
+      node.setAttribute('data-row_height', value['row_height']);
+    }
     return node
   }
 
   static formats(domNode) {
     const formats = {}
 
-    return CELL_ATTRIBUTES.concat(CELL_IDENTITY_KEYS).concat(['cell-bg']).reduce((formats, attribute) => {
-      if (domNode.hasAttribute(`data-${attribute}`)) {
-        formats[attribute] = domNode.getAttribute(`data-${attribute}`) || undefined
-      }
-      return formats
+    return CELL_ATTRIBUTES
+      .concat(CELL_IDENTITY_KEYS)
+      .concat(['cell_bg', 
+               'cell_vertical_alignment', 
+               'cell_horizontal_alignment', 
+               'cell_btc', 
+               'cell_bbc', 
+               'cell_brc', 
+               'cell_blc', 
+               'cell_bts', 
+               'cell_bbs', 
+               'cell_brs', 
+               'cell_bls', 
+               'row_height'])
+      .reduce((formats, attribute) => {
+        if (domNode.hasAttribute(`data-${attribute}`)) {
+          formats[attribute] = domNode.getAttribute(`data-${attribute}`) || undefined
+        }
+        return formats
     }, formats)
   }
 
@@ -59,10 +126,76 @@ class TableCellLine extends Block {
       }
     } else if (name === 'cell-bg') {
       if (value) {
-        this.domNode.setAttribute('data-cell-bg', value)
+        this.domNode.setAttribute('data-cell_bg', value);
       } else {
-        this.domNode.removeAttribute('data-cell-bg')
+        this.domNode.removeAttribute('data-cell_bg');
       }
+    } else if (name === 'cell_vertical_alignment') {
+      if (value) {
+        this.domNode.setAttribute('data-cell_vertical_alignment', value);
+      } else {
+        this.domNode.removeAttribute('data-cell_vertical_alignment');
+      }
+    } else if (name === 'cell_horizontal_alignment') {
+      if (value) {
+        this.domNode.setAttribute('data-cell_horizontal_alignment', value);
+      } else {
+        this.domNode.removeAttribute('data-cell_horizontal_alignment');
+      }
+    } else if (name === 'cell_btc') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_btc', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_btc');
+        }
+    } else if (name === 'cell_bbc') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_bbc', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_bbc');
+        }
+    } else if (name === 'cell_brc') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_brc', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_brc');
+        }
+    } else if (name === 'cell_blc') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_blc', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_blc');
+        }
+    } else if (name === 'cell_bts') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_bts', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_bts');
+        }
+    } else if (name === 'cell_bbs') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_bbs', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_bbs');
+        }
+    } else if (name === 'cell_brs') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_brs', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_brs');
+        }
+    } else if (name === 'cell_bls') {
+        if (value) {
+          this.domNode.setAttribute('data-cell_bls', value);
+        } else {
+          this.domNode.removeAttribute('data-cell_bls');
+        }
+    } else if (name === 'row_height') {
+        if (value) {
+          this.domNode.setAttribute('data-row_height', value);
+        } else {
+          this.domNode.removeAttribute('data-row_height');
+        }
     } else if (name === 'header') {
       if (!value) return;
       const { row, cell, rowspan, colspan } = TableCellLine.formats(this.domNode)
@@ -81,17 +214,39 @@ class TableCellLine extends Block {
   optimize(context) {
     // cover shadowBlot's wrap call, pass params parentBlot initialize
     // needed
-    const rowId = this.domNode.getAttribute('data-row')
-    const rowspan = this.domNode.getAttribute('data-rowspan')
-    const colspan = this.domNode.getAttribute('data-colspan')
-    const cellBg = this.domNode.getAttribute('data-cell-bg')
+    const rowId = this.domNode.getAttribute('data-row');
+    const rowspan = this.domNode.getAttribute('data-rowspan');
+    const colspan = this.domNode.getAttribute('data-colspan');
+    const cellBg = this.domNode.getAttribute('data-cell_bg');
+    const verticalAlignment = this.domNode.getAttribute('data-cell_vertical_alignment');
+    const horizontalAlignment = this.domNode.getAttribute('data-cell_horizontal_alignment');
+    const borderTopColor = this.domNode.getAttribute('data-cell_btc');
+    const borderBottomColor = this.domNode.getAttribute('data-cell_bbc');
+    const borderRightColor = this.domNode.getAttribute('data-cell_brc');
+    const borderLeftColor = this.domNode.getAttribute('data-cell_blc');
+    const borderTopSize = this.domNode.getAttribute('data-cell_bts');
+    const borderBottomSize = this.domNode.getAttribute('data-cell_bbs');
+    const borderRightSize = this.domNode.getAttribute('data-cell_brs');
+    const borderLeftSize = this.domNode.getAttribute('data-cell_bls');
+    const rowHeight = this.domNode.getAttribute('data-row_height');
     if (this.statics.requiredContainer &&
       !(this.parent instanceof this.statics.requiredContainer)) {
       this.wrap(this.statics.requiredContainer.blotName, {
         row: rowId,
         colspan,
         rowspan,
-        'cell-bg': cellBg
+        'cell-bg': cellBg,
+        'cell_vertical_alignment': verticalAlignment,
+        'cell_horizontal_alignment': horizontalAlignment,
+        'cell_btc': borderTopColor,
+        'cell_bbc': borderBottomColor,
+        'cell_brc': borderRightColor,
+        'cell_blc': borderLeftColor,
+        'cell_bts': borderTopSize,
+        'cell_bbs': borderBottomSize,
+        'cell_brs': borderRightSize,
+        'cell_bls': borderLeftSize,
+        'row_height': rowHeight
       })
     }
     super.optimize(context)
@@ -132,12 +287,86 @@ class TableCell extends Container {
     })
 
     if (value['cell-bg']) {
-      node.setAttribute('data-cell-bg', value['cell-bg'])
+      node.setAttribute('data-cell_bg', value['cell-bg'])
       node.style.backgroundColor = value['cell-bg']
     }
 
-    return node
-  }
+    if (value['cell_vertical_alignment']) {
+      node.setAttribute('data-cell_vertical_alignment', value['cell_vertical_alignment']);
+      switch (value['cell_vertical_alignment'].toUpperCase()) {
+          case 'TOP':
+            node.style.verticalAlign = 'top';
+          break;
+          case 'CENTER':
+            node.style.verticalAlign = 'middle';
+          break;
+          case 'BOTTOM':
+            node.style.verticalAlign = 'bottom';
+          break;
+      }
+    }
+
+    if (value['cell_horizontal_alignment']) {
+        node.setAttribute('data-cell_horizontal_alignment', value['cell_horizontal_alignment']);
+        switch (value['cell_horizontal_alignment'].toUpperCase()) {
+            case 'CENTER':
+              node.style.textAlign = 'center';
+            break;
+            case 'RIGHT':
+              node.style.textAlign = 'end';
+            break;
+            case 'JUSTIFY':
+              node.style.textAlign = 'justify';
+            break;
+        }
+    }
+
+    if (value['cell_btc']) {
+      node.setAttribute('data-cell_btc', value['cell_btc']);
+      node.style.borderTopColor = value['cell_btc'];
+    }
+
+    if (value['cell_bbc']) {
+      node.setAttribute('data-cell_bbc', value['cell_bbc']);
+      node.style.borderBottomColor = value['cell_bbc'];
+    }
+
+    if (value['cell_brc']) {
+      node.setAttribute('data-cell_brc', value['cell_brc']);
+      node.style.borderRightColor = value['cell_brc'];
+    }
+
+    if (value['cell_blc']) {
+      node.setAttribute('data-cell_blc', value['cell_blc']);
+      node.style.borderLeftColor = value['cell_blc'];
+    }
+
+    if (value['cell_bts']) {
+      node.setAttribute('data-cell_bts', value['cell_bts']);
+      node.style.borderTopWidth = `${value['cell_bts']}pt`;
+    }
+
+    if (value['cell_bbs']) {
+      node.setAttribute('data-cell_bbs', value['cell_bbs']);
+      node.style.borderBottomWidth = `${value['cell_bbs']}pt`;
+    }
+
+    if (value['cell_brs']) {
+      node.setAttribute('data-cell_brs', value['cell_brs']);
+      node.style.borderRightWidth = `${value['cell_brs']}pt`;
+    }
+
+    if (value['cell_bls']) {
+      node.setAttribute('data-cell_bls', value['cell_bls']);
+      node.style.borderLeftWidth = `${value['cell_bls']}pt`;
+    }
+
+    if (value['row_height']) {
+      node.setAttribute('data-row_height', value['row_height']);
+    }
+
+  return node
+}
 
   static formats(domNode) {
     const formats = {}
@@ -146,8 +375,52 @@ class TableCell extends Container {
       formats["row"] = domNode.getAttribute("data-row")
     }
 
-    if (domNode.hasAttribute("data-cell-bg")) {
-      formats["cell-bg"] = domNode.getAttribute("data-cell-bg")
+    if (domNode.hasAttribute("data-cell_bg")) {
+      formats["cell_bg"] = domNode.getAttribute("data-cell_bg");
+    }
+
+    if (domNode.hasAttribute('data-cell_vertical_alignment')) {
+      formats['cell_vertical_alignment'] = domNode.getAttribute('data-cell_vertical_alignment');
+    }
+
+    if (domNode.hasAttribute('data-cell_horizontal_alignment')) {
+      formats['cell_horizontal_alignment'] = domNode.getAttribute('data-cell_horizontal_alignment');
+    }
+
+    if (domNode.hasAttribute('data-cell_btc')) {
+      formats['cell_btc'] = domNode.getAttribute('data-cell_btc');
+    }
+
+    if (domNode.hasAttribute('data-cell_bbc')) {
+      formats['cell_bbc'] = domNode.getAttribute('data-cell_bbc');
+    }
+
+    if (domNode.hasAttribute('data-cell_brc')) {
+      formats['cell_brc'] = domNode.getAttribute('data-cell_brc');
+    }
+
+    if (domNode.hasAttribute('data-cell_blc')) {
+      formats['cell_blc'] = domNode.getAttribute('data-cell_blc');
+    }
+
+    if (domNode.hasAttribute('data-cell_bts')) {
+      formats['cell_bts'] = domNode.getAttribute('data-cell_bts');
+    }
+
+    if (domNode.hasAttribute('data-cell_bbs')) {
+      formats['cell_bbs'] = domNode.getAttribute('data-cell_bbs');
+    }
+
+    if (domNode.hasAttribute('data-cell_brs')) {
+      formats['cell_brs'] = domNode.getAttribute('data-cell_brs');
+    }
+
+    if (domNode.hasAttribute('data-cell_bls')) {
+      formats['cell_bls'] = domNode.getAttribute('data-cell_bls');
+    }
+
+    if (domNode.hasAttribute('data-row_height')) {
+      formats['row_height'] = domNode.getAttribute('data-row_height');
     }
 
     return CELL_ATTRIBUTES.reduce((formats, attribute) => {
@@ -173,8 +446,52 @@ class TableCell extends Container {
       formats["row"] = this.domNode.getAttribute("data-row")
     }
 
-    if (this.domNode.hasAttribute("data-cell-bg")) {
-      formats["cell-bg"] = this.domNode.getAttribute("data-cell-bg")
+    if (this.domNode.hasAttribute("data-cell_bg")) {
+      formats["cell_bg"] = this.domNode.getAttribute("data-cell_bg");
+    }
+
+    if (this.domNode.hasAttribute('data-cell_vertical_alignment')) {
+      formats['cell_vertical_alignment'] = this.domNode.getAttribute('data-cell_vertical_alignment');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_horizontal_alignment')) {
+      formats['cell_horizontal_alignment'] = this.domNode.getAttribute('data-cell_horizontal_alignment');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_btc')) {
+      formats['cell_btc'] = this.domNode.getAttribute('data-cell_btc');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_bbc')) {
+      formats['cell_bbc'] = this.domNode.getAttribute('data-cell_bbc');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_brc')) {
+      formats['cell_brc'] = this.domNode.getAttribute('data-cell_brc');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_blc')) {
+      formats['cell_blc'] = this.domNode.getAttribute('data-cell_blc');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_bts')) {
+      formats['cell_bts'] = this.domNode.getAttribute('data-cell_bts');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_bbs')) {
+      formats['cell_bbs'] = this.domNode.getAttribute('data-cell_bbs');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_brs')) {
+      formats['cell_brs'] = this.domNode.getAttribute('data-cell_brs');
+    }
+
+    if (this.domNode.hasAttribute('data-cell_bls')) {
+      formats['cell_bls'] = this.domNode.getAttribute('data-cell_bls');
+    }
+
+    if (this.domNode.hasAttribute('data-row_height')) {
+      formats['row_height'] = this.domNode.getAttribute('data-row_height');
     }
 
     return CELL_ATTRIBUTES.reduce((formats, attribute) => {
@@ -208,7 +525,7 @@ class TableCell extends Container {
       this.toggleAttribute(`data-${name}`, value)
       this.formatChildren(name, value)
     } else if (name === 'cell-bg') {
-      this.toggleAttribute('data-cell-bg', value)
+      this.toggleAttribute('data-cell_bg', value)
       this.formatChildren(name, value)
 
       if (value) {
@@ -216,19 +533,141 @@ class TableCell extends Container {
       } else {
         this.domNode.style.backgroundColor = 'initial'
       }
+    } else if (name === 'cell_vertical_alignment') {
+        this.toggleAttribute('data-cell_vertical_alignment', value);
+        this.formatChildren(name, value);
+
+        switch (value.toUpperCase()) {
+            case 'TOP':
+              this.domNode.style.verticalAlign = 'top';
+            break;
+            case 'CENTER':
+              this.domNode.style.verticalAlign = 'middle';
+            break;
+            case 'BOTTOM':
+              this.domNode.style.verticalAlign = 'bottom';
+            break;
+            default:
+              this.domNode.style.verticalAlign = 'initial';
+            break;
+        }
+    } else if (name === 'cell_horizontal_alignment') {
+        this.toggleAttribute('data-cell_horizontal_alignment', value);
+        this.formatChildren(name, value);
+
+        switch (value.toUpperCase()) {
+            case 'CENTER':
+              this.domNode.style.textAlign = 'center';
+            break;
+            case 'RIGHT':
+              this.domNode.style.textAlign = 'end';
+            break;
+            case 'JUSTIFY':
+              this.domNode.style.textAlign = 'justify';
+            break;
+            default:
+              this.domNode.style.textAlign = 'initial';
+            break;
+        }
+    } else if (name === 'cell_btc') {
+      this.toggleAttribute('data-cell_btc', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderTopColor = value;
+      } else {
+        this.domNode.style.borderTopColor = 'initial';
+      }
+    } else if (name === 'cell_bbc') {
+      this.toggleAttribute('data-cell_bbc', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderBottomColor = value;
+      } else {
+        this.domNode.style.borderBottomColor = 'initial';
+      }
+    } else if (name === 'cell_brc') {
+      this.toggleAttribute('data-cell_brc', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderRightColor = value;
+      } else {
+        this.domNode.style.borderRightColor = 'initial';
+      }
+    } else if (name === 'cell_blc') {
+      this.toggleAttribute('data-cell_blc', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderLeftColor = value;
+      } else {
+        this.domNode.style.borderLeftColor = 'initial';
+      }
+    } else if (name === 'cell_bts') {
+      this.toggleAttribute('data-cell_bts', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderTopWidth = `${value}pt`;
+      } else {
+        this.domNode.style.borderTopWidth = 'initial';
+      }
+    } else if (name === 'cell_bbs') {
+      this.toggleAttribute('data-cell_bbs', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderBottomWidth = `${value}pt`;
+      } else {
+        this.domNode.style.borderBottomWidth = 'initial';
+      }
+    } else if (name === 'cell_brs') {
+      this.toggleAttribute('data-cell_brs', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderRightWidth = `${value}pt`;
+      } else {
+        this.domNode.style.borderRightWidth = 'initial';
+      }
+    } else if (name === 'cell_bls') {
+      this.toggleAttribute('data-cell_bls', value);
+      this.formatChildren(name, value);
+
+      if (value) {
+        this.domNode.style.borderLeftWidth = `${value}pt`;
+      } else {
+        this.domNode.style.borderLeftWidth = 'initial';
+      }
+    } else if (name === 'row_height') {
+      this.toggleAttribute('data-row_height', value);
+      const currentRow = this.row();
+      const rowNode = currentRow.domNode;
+      rowNode.setAttribute('data-row_height', value);
+      if (value) {
+        rowNode.style.setProperty('height', `${convertPointToPixel(value)}px`);
+      } else {
+        rowNode.style.removeProperty('height');
+      }
+
+      this.formatChildren(name, value);
     } else {
-      super.format(name, value)
+      super.format(name, value);
     }
   }
 
   optimize(context) {
-    const rowId = this.domNode.getAttribute("data-row")
+    const rowId = this.domNode.getAttribute("data-row");
+    const rowHeight = this.domNode.getAttribute("data-row_height");
 
     if (this.statics.requiredContainer &&
       !(this.parent instanceof this.statics.requiredContainer)) {
-      this.wrap(this.statics.requiredContainer.blotName, {
-        row: rowId
-      })
+        this.wrap(this.statics.requiredContainer.blotName, {
+          row: rowId,
+          'row_height': rowHeight
+      });
     }
     super.optimize(context)
   }
@@ -271,11 +710,15 @@ class TableRow extends Container {
   static create(value) {
     const node = super.create(value)
     node.setAttribute("data-row", value.row)
+    if (value.row_height) {
+      node.setAttribute("data-row_height", value.row_height);
+      node.style.setProperty('height', `${convertPointToPixel(value.row_height)}px`);
+    }
     return node
   }
 
   formats() {
-    return ["row"].reduce((formats, attrName) => {
+    return ["row", "row_height"].reduce((formats, attrName) => {
       if (this.domNode.hasAttribute(`data-${attrName}`)) {
         formats[attrName] = this.domNode.getAttribute(`data-${attrName}`)
       }
@@ -372,7 +815,114 @@ class TableContainer extends Container {
   constructor (scroll, domNode) {
     super(scroll, domNode)
     this.updateTableWidth()
+    this.applyStylesToTable();
   }
+
+  applyStylesToTable() {
+    setTimeout(() => {
+        if (!document.contains(this.domNode)) return;
+        const colGroup = this.colGroup();
+        if (!colGroup) return;
+
+        const firstCol = colGroup.children.head;
+        if (firstCol && firstCol.formats) {
+            const formats = firstCol.formats();
+
+            const tableMarginLeft = formats[TableCol.blotName].table_left_indent;
+            const tableAlignment = formats[TableCol.blotName].table_alignment;
+            const tablePrefferedWidth = formats[TableCol.blotName].table_preffered_width;
+
+            this.setTableMarginLeft(tableMarginLeft);
+            this.setTableAlignment(tableAlignment);
+            this.setTableWidth(colGroup, tablePrefferedWidth, tableMarginLeft);
+        }
+    }, 0);
+  }
+
+  allColumnsHave100Width(colGroup) {
+    return colGroup.children.reduce((acc, col) => { 
+      return acc && col.formats()[TableCol.blotName].width === '100';
+    }, true);
+  }
+
+  verifyTableWidthIsLargerThanPageWidth(tablePrefferedWidth, tableMarginLeft) {
+    if (tablePrefferedWidth === '0') {
+      return false;
+    }
+
+    var editor = document.querySelector('.ql-editor');
+    let pageWidth, pageMargins;
+    if (editor) {
+      pageWidth = editor.offsetWidth;
+      let editorStyle = window.getComputedStyle(editor);
+      const marginLeft = editorStyle.paddingLeft ? parseFloat(editorStyle.paddingLeft) : 0;
+      const marginRight = editorStyle.paddingRight ? parseFloat(editorStyle.paddingRight) : 0;
+
+      pageMargins = marginLeft + marginRight;
+    }
+
+    if (tablePrefferedWidth.endsWith('%')) {
+      tablePrefferedWidth = (parseFloat(tablePrefferedWidth) * pageWidth) / 100;
+    }
+    else {
+      tablePrefferedWidth = parseFloat(tablePrefferedWidth.replaceAll('pt', ''));
+    }
+
+    return tablePrefferedWidth + Math.abs(tableMarginLeft) > (pageWidth - pageMargins);
+  }
+
+  setTableWidth(colGroup, tablePrefferedWidth, tableMarginLeft) {
+    if (!tablePrefferedWidth || (tablePrefferedWidth === '0' && this.allColumnsHave100Width(colGroup)) || this.verifyTableWidthIsLargerThanPageWidth(tablePrefferedWidth, tableMarginLeft)) {
+        this.domNode.style.setProperty('width', '100%');
+        this.domNode.style.removeProperty('margin-left');
+      } else {
+        const tableWidth = colGroup.children.reduce((sumWidth, col) => {
+          const colWidth = parseInt(col.formats()[TableCol.blotName].width, 10);
+          sumWidth += colWidth;
+          return sumWidth;
+        }, 0);
+        this.domNode.style.setProperty('width', ''.concat(tableWidth, 'pt'));
+      }
+  }
+
+  setTableMarginLeft(tableMarginLeft) {
+      if (tableMarginLeft) {
+        this.domNode.style.setProperty('margin-left', ''.concat(tableMarginLeft, 'pt'));
+      }
+  }
+
+  setTableAlignment(tableAlignment) {
+      switch (tableAlignment) {
+          case TABLE_ALIGNMENT.CENTER:
+            this.domNode.parentNode.classList.add('table-alignment-center');
+            this.domNode.parentNode.classList.remove('table-alignment-right');
+          break;
+          case TABLE_ALIGNMENT.RIGHT:
+            this.domNode.parentNode.classList.add('table-alignment-right');
+            this.domNode.parentNode.classList.remove('table-alignment-center');
+          break;
+          default:
+            this.domNode.parentNode.classList.remove('table-alignment-center');
+            this.domNode.parentNode.classList.remove('table-alignment-right');
+          break;
+      }
+  }
+
+  // updateTableWidth() {
+  //     setTimeout(() => {
+  //         const colGroup = this.colGroup();
+  //         if (!colGroup) return;
+
+  //         const firstCol = colGroup.children.head;
+  //         if (!firstCol) return;
+
+  //         const firstColFormats = firstCol.formats();
+  //         const tablePrefferedWidth = firstColFormats[TableCol.blotName].table_preffered_width;
+  //         const tableMarginLeft = firstColFormats[TableCol.blotName].table_left_indent;
+
+  //         this.setTableWidth(colGroup, tablePrefferedWidth, tableMarginLeft);
+  //     }, 0);
+  // }
 
   updateTableWidth () {
     setTimeout(() => {
@@ -393,6 +943,26 @@ class TableContainer extends Container {
   colGroup () {
     return this.children.head
   }
+
+  updateColsTablePrefferedWidth() {
+    setTimeout(() => {
+        const colGroup = this.colGroup();
+        if (!colGroup) return;
+
+        const firstCol = colGroup.children.head;
+        const tablePrefferedWidth = parseFloat(firstCol.formats()[TableCol.blotName].table_preffered_width);
+
+        if (tablePrefferedWidth > 0) {
+          const tableStyles = getComputedStyle(this.domNode);
+          const tableWidth = parseFloat(tableStyles.width);
+          const tableWidthInPoints = this.convertToPoints(tableWidth);
+
+          colGroup.children.forEach(col => {
+            col.format('table_preffered_width', ''.concat(tableWidthInPoints, 'pt'));
+          });
+        }
+    }, 0);
+  } 
 
   deleteColumns(compareRect, delIndexes = [], editorWrapper) {
     const [body] = this.descendants(TableBody)
@@ -441,7 +1011,8 @@ class TableContainer extends Container {
       cell.format('colspan', cellColspan - delIndexes.length)
     })
 
-    this.updateTableWidth()
+    this.updateTableWidth();    
+    this.updateColsTablePrefferedWidth();
   }
 
   deleteRow(compareRect, editorWrapper) {
@@ -577,6 +1148,84 @@ class TableContainer extends Container {
     }
   }
 
+  convertToPixels(value) {
+    return (value * 4) / 3;
+  }
+
+  convertToPoints(value) {
+    return (value * 3) / 4;
+  }
+
+  getTableWidthAndMarginLeft() {
+      let tableWidth = this.domNode.offsetWidth;
+      let tableMarginLeft = this.domNode.style.getPropertyValue('margin-left');
+      let tableMarginLeftValue = 0;
+
+      if (tableMarginLeft && tableMarginLeft != 'auto') {
+        const tableStyles = window.getComputedStyle(this.domNode);
+        tableMarginLeftValue = parseFloat(tableStyles.marginLeft.replace('px', ''));
+      }
+
+    return { tableWidth, tableMarginLeftValue };
+  }
+
+  getPageWidthWorkingArea() {
+    const pageWidth = this.scroll.domNode.offsetWidth;
+    const pageStyles = window.getComputedStyle(this.scroll.domNode);
+    const pagePaddingLeft = parseFloat(pageStyles.paddingLeft.replace('px', ''));
+    const pagePaddingRight = parseFloat(pageStyles.paddingRight.replace('px', ''));
+
+    return pageWidth - (pagePaddingLeft + pagePaddingRight);
+  }
+
+  updateColumnsWidth(colGroup, workingAreaWidth) {
+    const widthPerCol = ((workingAreaWidth) / (colGroup.children.length + 1));
+    const widthPerColInPoints = this.convertToPoints(widthPerCol);
+
+    colGroup.children.forEach(col => {
+      col.format('width', widthPerColInPoints);
+    });
+
+    const tableWidth = widthPerCol * (colGroup.children.length + 1);
+    return { tableWidth, widthPerColInPoints };
+  }
+
+  getColAttributes(colRef) {
+    let colAttributes = true;
+    const colGroup = this.colGroup();
+
+    if (colRef) {
+      colAttributes = colRef.formats()[TableCol.blotName];
+    } else {
+      if (colGroup && colGroup.children && colGroup.children.length > 0) {
+        const col = colGroup.children.tail;
+        colAttributes = col.formats()[TableCol.blotName];
+      }
+    }
+
+    const newColWidth = this.convertToPixels(parseFloat(colAttributes.width));
+    const { tableWidth, tableMarginLeftValue } = this.getTableWidthAndMarginLeft();
+    const workingAreaWidth = this.getPageWidthWorkingArea();
+    let updatedTableWidth = tableWidth + newColWidth;
+
+    if (updatedTableWidth + tableMarginLeftValue > workingAreaWidth) {
+      const { tableWidth, widthPerColInPoints } = this.updateColumnsWidth(colGroup, workingAreaWidth - tableMarginLeftValue);
+      updatedTableWidth = tableWidth;
+      colAttributes.width = widthPerColInPoints;
+    }
+    
+    const currentTablePrefferedWidth = parseFloat(colAttributes.table_preffered_width);
+    if (currentTablePrefferedWidth > 0) {
+        const tablePrefferedWidth = ''.concat(this.convertToPoints(updatedTableWidth), 'pt');
+        colGroup.children.forEach(col => {
+          col.format('table_preffered_width', tablePrefferedWidth);
+        });
+        colAttributes.table_preffered_width = tablePrefferedWidth;
+    }
+
+    return colAttributes;
+  }
+
   insertColumn(compareRect, colIndex, isRight = true, editorWrapper) {
     const [body] = this.descendants(TableBody)
     const [tableColGroup] = this.descendants(TableColGroup)
@@ -639,7 +1288,7 @@ class TableContainer extends Container {
         row: rId,
         cell: id,
         rowspan: cellFormats.rowspan
-      })
+      });
       tableCell.appendChild(cellLine)
 
       if (ref) {
@@ -651,7 +1300,7 @@ class TableContainer extends Container {
     })
 
     // insert new tableCol
-    const tableCol = this.scroll.create(TableCol.blotName, true)
+    const tableCol = this.scroll.create(TableCol.blotName, this.getColAttributes(colRef));
     let colRef = isRight ? tableCols[colIndex].next : tableCols[colIndex]
     if (colRef) {
       tableColGroup.insertBefore(tableCol, colRef)
@@ -735,7 +1384,7 @@ class TableContainer extends Container {
         row: rId,
         cell: cId,
         colspan: cellFormats.colspan
-      })
+      });
       const empty = this.scroll.create(Break.blotName)
       cellLine.appendChild(empty)
       tableCell.appendChild(cellLine)
@@ -765,6 +1414,36 @@ class TableContainer extends Container {
     // reordering affectedCells
     affectedCells.sort(sortFunc)
     return affectedCells
+  }
+
+  insertEmptyRow(refRow, isDown) {
+    const [body] = this.descendants(TableBody);
+    if (body == null || body.children.head == null) return;
+
+    //Criando a nova linha (tr) da tabela
+    const rId = table_rowId();
+    const newRow = this.scroll.create(TableRow.blotName, {
+      row: rId
+    });
+
+    //Criando a nova célula (td) da tabela
+    const cId = table_cellId();
+    const colspan = this.colGroup().length();
+    const tableCell = this.scroll.create(TableCell.blotName, Object.assign({}, CELL_DEFAULT, {
+      row: rId,
+      colspan: colspan
+    }));
+    const cellLine = this.scroll.create(TableCellLine.blotName, { row: rId, cell: cId, colspan: colspan });
+    const empty = this.scroll.create(Break.blotName);
+    cellLine.appendChild(empty);
+    tableCell.appendChild(cellLine);
+    newRow.appendChild(tableCell);
+
+    if (isDown) {
+      body.insertBefore(newRow, refRow.next);
+    } else {
+      body.insertBefore(newRow, refRow);
+    }
   }
 
   mergeCells (compareRect, mergingCells, rowspan, colspan, editorWrapper) {
