@@ -188,7 +188,7 @@ export function matchTable (node, delta, scroll, isInsideTable) {
     return delta
   } else {
     for (let i = 0; i < maxCellsNumber - colsNumber; i++) {
-      newColDelta.insert('\n', { 'table-col': true })
+      newColDelta.insert('\n', { 'table_col': true })
     }
     
     if (colsNumber === 0) return newColDelta.concat(delta)
@@ -197,7 +197,7 @@ export function matchTable (node, delta, scroll, isInsideTable) {
     return delta.reduce((finalDelta, op) => {
       finalDelta.insert(op.insert, op.attributes)
   
-      if (op.attributes && op.attributes['table-col']) {
+      if (op.attributes && op.attributes['table_col']) {
         lastNumber += op.insert.length
         if (lastNumber === colsNumber) {
           finalDelta = finalDelta.concat(newColDelta)

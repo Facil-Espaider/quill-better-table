@@ -200,7 +200,7 @@ class BetterTable extends Module {
     delta.insert('\n')
     // insert table column
     delta = new Array(columns).fill('\n').reduce((memo, text) => {
-      memo.insert(text, { 'table-col': true })
+      memo.insert(text, { 'table_col': true })
       return memo
     }, delta)
     // insert table cell line with empty line

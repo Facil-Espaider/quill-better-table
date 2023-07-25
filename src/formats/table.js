@@ -799,7 +799,7 @@ class TableCol extends Block {
     return this.domNode.outerHTML
   }
 }
-TableCol.blotName = "table-col"
+TableCol.blotName = "table_col"
 TableCol.tagName = "col"
 
 class TableColGroup extends Container {}
