@@ -1,7 +1,16 @@
 const path = require('path');
+const pkg = require('./package.json');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+const bannerPack = new webpack.BannerPlugin({
+  banner: [
+    `${pkg.name} v${pkg.version}`,
+    'https://quilljs.com/',
+  ].join('\n'),
+  entryOnly: true,
+});
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -109,6 +118,7 @@ module.exports = (env, argv) => {
       ]
     },
     plugins:[
+      bannerPack,
       new HtmlWebpackPlugin({
         title:'quill-better-table',
         template:'./demo/demo1.html',
